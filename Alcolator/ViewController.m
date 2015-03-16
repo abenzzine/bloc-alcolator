@@ -10,11 +10,7 @@
 
 @interface ViewController () <UITextFieldDelegate>
 
-
-@property (weak, nonatomic) UIButton *calculateButton;
 @property (weak, nonatomic) UITapGestureRecognizer *hideKeyboardTapGestureRecognizer;
-
-
 @property (weak, nonatomic) IBOutlet UILabel *beerCounter;
 
 @end
@@ -23,8 +19,6 @@
 
 - (void)setTitleColor:(UIColor *)color
              forState:(UIControlState)state; {
-    [self.calculateButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.calculateButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
 }
 
 
@@ -36,22 +30,21 @@
     UITextField *textField = [[UITextField alloc] init];
     UISlider *slider = [[UISlider alloc] init];
     UILabel *label = [[UILabel alloc] init];
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] init];
     
     // Add each view and the gesture recognizer as the view's subviews
     [self.view addSubview:textField];
-    [self.view addSubview:slider];
     [self.view addSubview:label];
-    [self.view addSubview:button];
     [self.view addGestureRecognizer:tap];
+    [self.view addSubview:slider];
     
     // Assign the views and gesture recognizer to our properties
     self.beerPercentTextField = textField;
     self.beerCountSlider = slider;
     self.resultLabel = label;
-    self.calculateButton = button;
     self.hideKeyboardTapGestureRecognizer = tap;
+    
+    
 }
 
 - (void)textFieldDidChange:(UITextField *)sender {
@@ -70,31 +63,13 @@
     NSLog(@"Slider value changed to %f", sender.value);
     [self.beerPercentTextField resignFirstResponder];
     
-    NSString *brewCount;
-    
-    if (sender.value == 1) {
-        brewCount = NSLocalizedString(@"12 oz. brewski", @"singular beer");
-    } else {
-        brewCount = NSLocalizedString(@"12 oz. brewskis", @"plural of beer");
-    }
-
 
     
-    
-    NSString *runningCounterText = [NSString stringWithFormat:@"%.0f %@", sender.value, brewCount];
-    self.beerCounter.text = runningCounterText;
-    
-}
-
-- (void)buttonPressed:(UIButton *)sender {
-    
-    [self.beerPercentTextField resignFirstResponder];
-    
-    // first, calculate how much alcohol is in all those beers...
+    // calculate how much alcohol is in all those beers...
     
     int numberOfBeers = self.beerCountSlider.value;
     int ouncesInOneBeerGlass = 12;  //assume they are 12oz beer bottles
-
+    
     float alcoholPercentageOfBeer = [self.beerPercentTextField.text floatValue] / 100;
     float ouncesOfAlcoholPerBeer = ouncesInOneBeerGlass * alcoholPercentageOfBeer;
     float ouncesOfAlcoholTotal = ouncesOfAlcoholPerBeer * numberOfBeers;
@@ -132,10 +107,18 @@
         wineText = NSLocalizedString(@"glasses", @"plural of glass");
     }
     
-    // generate the result text, and display it on the label
+    // generate the result text
     
     NSString *resultText = [NSString stringWithFormat:NSLocalizedString(@"%d %@ %@ as much alcohol as %.1f %@ of wine.", nil), numberOfBeers, beerText, containText, numberOfWineGlassesForEquivalentAlcoholAmount, wineText];
     self.resultLabel.text = resultText;
+    
+}
+
+- (void)buttonPressed:(UIButton *)sender {
+    
+    [self.beerPercentTextField resignFirstResponder];
+    
+   
 }
 
 - (void)tapGestureDidFire:(UITapGestureRecognizer *)sender {
@@ -165,12 +148,13 @@
     
     self.resultLabel.font = [UIFont fontWithName:@"American Typewriter" size:18];
     
-    self.calculateButton.titleLabel.font = [UIFont fontWithName:@"American Typewriter" size:18];
-   
+    self.beerCountSlider.maximumTrackTintColor = [UIColor colorWithRed:0.957 green:0.702 blue:0.314 alpha:1];
+    self.beerCountSlider.minimumTrackTintColor = [UIColor colorWithRed:0.827 green:0.329 blue:0 alpha:1];
+    
     
     
     // Set keyboard attributes
-    self.beerPercentTextField.keyboardType = UIKeyboardTypeNumberPad;
+    self.beerPercentTextField.keyboardType = UIKeyboardTypeDecimalPad;
     self.beerPercentTextField.keyboardAppearance = UIKeyboardAppearanceDark;
     
     // Tells 'self.beerCountSlider that its value changes, it should call '[self -sliderValueDidChange:]'
@@ -181,11 +165,7 @@
     self.beerCountSlider.minimumValue = 1;
     self.beerCountSlider.maximumValue = 10;
     
-    // Tells 'self.calculateButton that when a finger is lifted from button while still inside its bounds, to call '[self -buttonPressed]'
-    [self.calculateButton addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    
-    // Set title of button
-    [self.calculateButton setTitle:NSLocalizedString(@"Calculate", @"Calculate command") forState:UIControlStateNormal];
+  
     
     //tells the tap gesture recognizer to call '[self -tapGestureDidFire:]' when it detects a tap
     [self.hideKeyboardTapGestureRecognizer addTarget:self action:@selector(tapGestureDidFire:)];
@@ -213,8 +193,7 @@
     CGFloat bottomOfSlider = CGRectGetMaxY(self.beerCountSlider.frame);
     self.resultLabel.frame = CGRectMake(padding, bottomOfSlider + padding, itemWidth, itemHeight);
     
-    CGFloat bottomOfLabel = CGRectGetMaxY(self.resultLabel.frame);
-    self.calculateButton.frame = CGRectMake(padding, bottomOfLabel + padding, itemWidth, itemHeight);
+    //CGFloat bottomOfLabel = CGRectGetMaxY(self.resultLabel.frame);
     
   
 }
