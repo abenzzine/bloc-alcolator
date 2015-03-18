@@ -112,6 +112,11 @@
     NSString *resultText = [NSString stringWithFormat:NSLocalizedString(@"%d %@ %@ as much alcohol as %.1f %@ of wine.", nil), numberOfBeers, beerText, containText, numberOfWineGlassesForEquivalentAlcoholAmount, wineText];
     self.resultLabel.text = resultText;
     
+    NSString *wineGlassesDigit =  [NSString stringWithFormat:NSLocalizedString(@"Wine (%.1f %@)", nil), numberOfWineGlassesForEquivalentAlcoholAmount, wineText];
+    
+    
+    self.title = NSLocalizedString(wineGlassesDigit, @"wine");
+    
 }
 
 - (void)buttonPressed:(UIButton *)sender {
@@ -129,7 +134,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    // Basic Navigation checkpoint additions
+    self.title = NSLocalizedString(@"Wine", @"wine");
     
     // set our primary view's background color
     self.view.backgroundColor = [UIColor colorWithRed:0.953 green:0.612 blue:0.071 alpha:1]; // #e67e22
