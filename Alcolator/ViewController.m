@@ -21,6 +21,19 @@
              forState:(UIControlState)state; {
 }
 
+- (instancetype) init {
+    self = [super init];
+    
+    if (self) {
+        self.title = NSLocalizedString(@"Wine", @"wine");
+        
+        // Since we don't have icons, let's move the title to the middle of the tab bar
+        [self.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -18)];
+    }
+    
+    return self;
+}
+
 
 -(void)loadView {
     // Allocate and initialize the all-encompassing view
@@ -63,7 +76,7 @@
     NSLog(@"Slider value changed to %f", sender.value);
     [self.beerPercentTextField resignFirstResponder];
     
-
+    [self.tabBarItem setBadgeValue:[NSString stringWithFormat:@"%d", (int) sender.value]];
     
     // calculate how much alcohol is in all those beers...
     
@@ -107,15 +120,15 @@
         wineText = NSLocalizedString(@"glasses", @"plural of glass");
     }
     
-    // generate the result text
+     NSString *wineGlassesDigit =  [NSString stringWithFormat:NSLocalizedString(@"Wine (%.1f %@)", nil), numberOfWineGlassesForEquivalentAlcoholAmount, wineText];
+    
+    // Display result
     
     NSString *resultText = [NSString stringWithFormat:NSLocalizedString(@"%d %@ %@ as much alcohol as %.1f %@ of wine.", nil), numberOfBeers, beerText, containText, numberOfWineGlassesForEquivalentAlcoholAmount, wineText];
     self.resultLabel.text = resultText;
     
-    NSString *wineGlassesDigit =  [NSString stringWithFormat:NSLocalizedString(@"Wine (%.1f %@)", nil), numberOfWineGlassesForEquivalentAlcoholAmount, wineText];
-    
-    
     self.title = NSLocalizedString(wineGlassesDigit, @"wine");
+    
     
 }
 
@@ -134,8 +147,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Basic Navigation checkpoint additions
-    self.title = NSLocalizedString(@"Wine", @"wine");
     
     // set our primary view's background color
     self.view.backgroundColor = [UIColor colorWithRed:0.953 green:0.612 blue:0.071 alpha:1]; // #e67e22
@@ -146,7 +157,6 @@
     // Set placeholder text
     self.beerPercentTextField.placeholder = NSLocalizedString(@"% Alcohol Content Per Beer", @"Beer percent placeholder text");
     
-    
     // Pretty it up ... kinda
     self.beerPercentTextField.backgroundColor = [UIColor whiteColor];
     self.beerPercentTextField.font = [UIFont fontWithName:@"American Typewriter" size:18];
@@ -156,7 +166,6 @@
     
     self.beerCountSlider.maximumTrackTintColor = [UIColor colorWithRed:0.957 green:0.702 blue:0.314 alpha:1];
     self.beerCountSlider.minimumTrackTintColor = [UIColor colorWithRed:0.827 green:0.329 blue:0 alpha:1];
-    
     
     
     // Set keyboard attributes
@@ -204,7 +213,6 @@
   
 }
     
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

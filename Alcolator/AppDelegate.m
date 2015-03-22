@@ -8,25 +8,45 @@
 
 #import "AppDelegate.h"
 #import "ViewController.h"
-#import "BLCMainMenuViewController.h"
+#import "WhiskeyViewController.h"
 
-@interface AppDelegate ()
+
+@interface AppDelegate () <UITabBarControllerDelegate>
+
 
 @end
 
 @implementation AppDelegate
 
 
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-        self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
    
     // Override point for customization after application launch
-        BLCMainMenuViewController *mainMenuViewController = [[BLCMainMenuViewController alloc] init];
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:mainMenuViewController];
-        self.window.rootViewController = navigationController;
-        [self.window makeKeyAndVisible];
+    
+    ViewController *wineVC =[[ViewController alloc] init];
+    WhiskeyViewController *whiskeyVC = [[WhiskeyViewController alloc] init];
+    UITabBarController *tabBarVC = [[UITabBarController alloc] init];
+    tabBarVC.delegate = self;
+    tabBarVC.viewControllers = @[wineVC, whiskeyVC];
+    
+    self.window.rootViewController = tabBarVC;
+    
+    
+    [self.window makeKeyAndVisible];
     return YES;
+}
+
+
+
+- (void) tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
+    // Print the title of the newly selected view controller into the console with a message
+
+    NSString *whereDoIGetTitle = @"Wine or Whiskey";
+    NSLog(@"New view controller selected: [%@]", whereDoIGetTitle);
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
